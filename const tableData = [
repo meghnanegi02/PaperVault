@@ -1,0 +1,53 @@
+const tableData = [
+  {
+    year: 1992,
+    journal: "Nature",
+    author: "John Doe",
+    abstract: "Study on XYZ topic in 1992...",
+    link: "https://example.com/paper1"
+  },
+  {
+    year: 1997,
+    journal: "Science",
+    author: "Jane Smith",
+    abstract: "Advanced findings about ABC...",
+    link: "https://example.com/paper2"
+  }
+  // Add more data as needed
+];
+
+function renderTable(data) {
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+  data.forEach(paper => {
+    const row = `
+      <tr>
+        <td>${paper.year}</td>
+        <td>${paper.journal}</td>
+        <td>${paper.author}</td>
+        <td>${paper.abstract}</td>
+        <td><a href="${paper.link}" target="_blank">View</a></td>
+      </tr>
+    `;
+    tbody.innerHTML += row;
+  });
+}
+
+function applyFilters() {
+  const filter1990 = document.getElementById("filter1990").checked;
+  const filter1996 = document.getElementById("filter1996").checked;
+
+  const filtered = tableData.filter(paper => {
+    if (filter1990 && paper.year >= 1990 && paper.year <= 1995) return true;
+    if (filter1996 && paper.year >= 1996 && paper.year <= 2000) return true;
+    return !filter1990 && !filter1996;
+  });
+
+  renderTable(filtered);
+}
+
+document.getElementById("filter1990").addEventListener("change", applyFilters);
+document.getElementById("filter1996").addEventListener("change", applyFilters);
+
+// Initial render
+renderTable(tableData);
