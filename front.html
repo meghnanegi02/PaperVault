@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PaperVault</title>
+  <link rel="stylesheet" href="front.css" />
+  <style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    max-width: 1200px;
+    width: 95%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  header {
+    background: linear-gradient(90deg, #00008B, #1a237e);
+    color: white;
+    text-align: center;
+    font-size: 2.5em;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  }
+
+  .search-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 1.1em;
+    display: block;
+  }
+
+  input, .dropdown-container input {
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #3a4a7a;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    font-size: 1em;
+  }
+
+  input:focus, .dropdown-container input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(58, 74, 122, 0.3);
+    transform: translateY(-2px);
+  }
+
+  input::placeholder {
+    color: #dcdcdc;
+  }
+
+  .dropdown-container {
+    position: relative;
+  }
+
+  #category-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  #category-list li {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  #category-list li:last-child {
+    border-bottom: none;
+  }
+
+  #category-list li:hover {
+    background-color: #f2f2f2;
+    padding-left: 20px;
+  }
+
+  #dropdown-btn {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+  }
+
+  #dropdown-btn:hover {
+    transform: scale(1.2);
+  }
+
+  .search-btn {
+    grid-column: 1 / -1;
+    padding: 16px;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .search-btn:hover {
+    background: linear-gradient(90deg, #218838, #1ca38b);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+  }
+
+  .search-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+  }
+
+  .search-btn:disabled {
+    background: linear-gradient(90deg, #cccccc, #bbbbbb);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .search-btn span {
+    margin-left: 8px;
+    font-size: 1.2em;
+  }
+
+  .error-message {
+    color: #d32f2f;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    padding: 12px;
+    background-color: rgba(211, 47, 47, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #d32f2f;
+  }
+
+  @media (max-width: 768px) {
+    .search-form {
+      grid-template-columns: 1fr;
+    }
+    
+    header {
+      font-size: 2em;
+      padding: 20px;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <div class="container">
+    <header>PAPERVAULT</header>
+
+    <div class="search-form">
+      <!-- Category with Searchable Dropdown -->
+      <label for="category-search">Category</label>
+      <div class="dropdown-container">
+        <input type="text" id="category-search" placeholder="Select a Category" />
+        <button id="dropdown-btn">▼</button>
+        <ul id="category-list">
+          <li>Artificial Intelligence (AI)</li>
+          <li>Machine Learning (ML)</li>
+          <li>Deep Learning</li>
+          <li>Natural Language Processing (NLP)</li>
+          <li>Computer Vision</li>
+          <li>Cybersecurity</li>
+          <li>Blockchain Technology</li>
+          <li>Software Engineering</li>
+          <li>Quantum Computing</li>
+          <li>Finance & FinTech</li>
+        </ul>
+      </div>
+
+      <!-- Other Inputs -->
+      <label for="keyword">Keyword</label>
+      <input type="text" id="keyword" placeholder="Enter keyword" />
+
+      <label for="author">Author</label>
+      <input type="text" id="author" placeholder="Enter author" />
+
+      <label for="timeline">Timeline</label>
+      <input type="text" id="timeline" placeholder="Enter timeline (e.g. 2020-2022)" />
+
+      <!-- Search Button -->
+      <button class="search-btn" type="button" onclick="fetchPapers()">FETCH ALL PAPERS <span>🔍</span></button>
+    </div>
+  </div>
+
+  <script>
+    // Function to check if the server is running
+    async function checkServerStatus() {
+      try {
+        // Make an API request to check the server status
+        const response = await fetch('http://localhost:8050/test');
+        const data = await response.json();
+        console.log("Server status:", data);
+        return data.status === "success";  // Check if server status is success
+      } catch (error) {
+        console.error("Server check failed:", error);
+        return false;
+      }
+    }
+
+    // Function to fetch papers based on search parameters
+  async function fetchPapers() {
+      const searchBtn = document.querySelector(".search-btn");
+
+      try {
+        // Show loading state
+        searchBtn.disabled = true;
+        searchBtn.innerHTML = "LOADING... <span>⏳</span>";
+
+        // Check if the server is running
+        const serverRunning = await checkServerStatus();
+        if (!serverRunning) {
+          throw new Error("Server is not running. Please start the server first.");
+        }
+
+        // Get search parameters
+        const keyword = document.getElementById("keyword").value;
+        const category = document.getElementById("category-search").value;
+        const author = document.getElementById("author").value;
+        const timeline = document.getElementById("timeline").value;
+
+        // Build query string
+        const params = new URLSearchParams();
+        if (keyword) params.append("keyword", keyword);
+        if (category) params.append("category", category);
+        if (author) params.append("author", author);
+        if (timeline) params.append("timeline", timeline);
+
+        console.log("Redirecting to second.html with params:", params.toString());
+        
+        // Redirect to second.html with the search parameters
+        window.location.href = `second.html?${params.toString()}`;
+
+      } catch (error) {
+        console.error("Error:", error);
+        alert(`Error: ${error.message}`);
+      } finally {
+        // Reset button state
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = "FETCH ALL PAPERS <span>🔍</span>";
+      }
+    }
+
+    // Add event listener for category dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownBtn = document.getElementById('dropdown-btn');
+      const categoryList = document.getElementById('category-list');
+      const categorySearch = document.getElementById('category-search');
+
+      dropdownBtn.addEventListener('click', function() {
+        categoryList.style.display = categoryList.style.display === 'none' ? 'block' : 'none';
+      });
+
+      categoryList.addEventListener('click', function(e) {
+        if (e.target.tagName === 'LI') {
+          categorySearch.value = e.target.textContent;
+          categoryList.style.display = 'none';
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown-container')) {
+          categoryList.style.display = 'none';
+        }
+      });
+
+      // Check server status on page load
+      checkServerStatus().then(isRunning => {
+        if (!isRunning) {
+          const container = document.querySelector(".container");
+          const errorMsg = document.createElement("div");
+          errorMsg.className = "error-message";
+          errorMsg.textContent = "Server is not running. Please start the server first.";
+          container.appendChild(errorMsg);
+        }
+      });
+      
+      // Use MutationObserver instead of deprecated DOMNodeInsertedIntoDocument
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            // Handle any DOM changes here if needed
+          }
+        });
+      });
+      
+      // Start observing the document with the configured parameters
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+</script>
+</body>
+</html>

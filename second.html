@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Research Paper Table</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .container {
+      max-width: 1200px;
+      width: 95%;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    h1 {
+      background: linear-gradient(90deg, #00008B, #1a237e);
+      color: white;
+      padding: 20px 25px;
+      border-radius: 12px 12px 0 0;
+      margin: -25px -30px 20px -30px;
+      font-size: 28px;
+      text-align: center;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    }
+    
+    .filter {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9ecef;
+    }
+    
+    .filter label {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      padding: 8px 12px;
+      background-color: #e9ecef;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .filter label:hover {
+      background-color: #dee2e6;
+      transform: translateY(-2px);
+    }
+    
+    .filter input[type="checkbox"] {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+      accent-color: #3a4a7a;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 20px;
+      font-size: 15px;
+      flex: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    th {
+      background-color: #3a4a7a;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    th:hover {
+      background-color: #2c3a5e;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    tr:hover {
+      background-color: #e9f7fe;
+      transition: background-color 0.2s ease;
+    }
+    
+    td a {
+      color: #3a4a7a;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background-color: rgba(58, 74, 122, 0.1);
+    }
+    
+    td a:hover {
+      color: #1a237e;
+      background-color: rgba(58, 74, 122, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .error-message {
+      color: #d32f2f;
+      text-align: center;
+      font-weight: bold;
+      padding: 15px;
+      background-color: rgba(211, 47, 47, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid #d32f2f;
+      margin: 20px 0;
+    }
+    
+    .loading {
+      text-align: center;
+      font-style: italic;
+      color: #6c757d;
+      padding: 20px;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    .table-container {
+      flex: 1;
+      overflow: auto;
+      max-height: calc(100vh - 250px);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .back-button {
+      margin-top: 20px;
+      background: linear-gradient(90deg, #6c757d, #495057);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: auto;
+      display: inline-block;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+      align-self: flex-start;
+    }
+    
+    .back-button:hover {
+      background: linear-gradient(90deg, #5a6268, #343a40);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+    }
+    
+    .back-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);
+    }
+    
+    .paper-count {
+      margin: 15px 0;
+      font-weight: 600;
+      color: #3a4a7a;
+      display: flex;
+      align-items: center;
+    }
+    
+    .paper-count::before {
+      content: '📚';
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 24px;
+        padding: 15px;
+        margin: -15px -15px 15px -15px;
+      }
+      
+      .filter {
+        padding: 10px;
+        gap: 8px;
+      }
+      
+      .filter label {
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+      
+      th, td {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Research Papers</h1>
+    
+    <div class="filter">
+      <label><input type="checkbox" id="filter1990"> 1990–1995</label>
+      <label><input type="checkbox" id="filter1996"> 1996–2000</label>
+      <label><input type="checkbox" id="filter2001"> 2001–2005</label>
+      <label><input type="checkbox" id="filter2006"> 2006–2010</label>
+      <label><input type="checkbox" id="filter2011"> 2011–2015</label>
+      <label><input type="checkbox" id="filter2016"> 2016–2020</label>
+      <label><input type="checkbox" id="filter2021"> 2021–Present</label>
+    </div>
+
+    <div class="paper-count" id="paperCount">Loading papers...</div>
+
+    <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+            <th data-sort="year">Year ▼</th>
+            <th data-sort="journal">Journal ▼</th>
+            <th data-sort="author">Author</th>
+            <th>Title</th>
+          <th>Abstract</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+          <tr>
+            <td colspan="6" class="loading">Loading papers...</td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+
+    <button class="back-button" onclick="window.location.href='front.html'">Back to Search</button>
+  </div>
+
+  <script>
+    // Function to check if the server is running
+    async function checkServerStatus() {
+      try {
+        const response = await fetch('http://localhost:8050/test');
+        const data = await response.json();
+        console.log("Server status:", data);
+        return data.status === "success";
+      } catch (error) {
+        console.error("Server check failed:", error);
+        return false;
+      }
+    }
+
+    // Function to parse URL parameters
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        keyword: params.get('keyword') || '',
+        category: params.get('category') || '',
+        author: params.get('author') || '',
+        timeline: params.get('timeline') || ''
+      };
+    }
+
+    // Function to fetch papers from the server
+    async function fetchPapers() {
+      const tableBody = document.getElementById('tableBody');
+      const paperCount = document.getElementById('paperCount');
+      
+      try {
+        // Check if the server is running
+        const serverRunning = await checkServerStatus();
+        if (!serverRunning) {
+          throw new Error("Server is not running. Please start the server first.");
+        }
+
+        // Get search parameters from URL
+        const params = getUrlParams();
+        const queryParams = new URLSearchParams();
+        
+        // Add non-empty parameters to the query
+        if (params.keyword) queryParams.append("keyword", params.keyword);
+        if (params.category) queryParams.append("category", params.category);
+        if (params.author) queryParams.append("author", params.author);
+        if (params.timeline) queryParams.append("timeline", params.timeline);
+
+        console.log("Fetching papers with params:", queryParams.toString());
+        
+        // Fetch papers from backend
+        const response = await fetch(`http://localhost:8050/papers?${queryParams.toString()}`);
+
+        if (!response.ok) {
+          let errorMessage = `Server error: ${response.status}`;
+          try {
+            const errorData = await response.json();
+            console.error("Server error response:", errorData);
+            errorMessage = `Server error: ${errorData.message || errorMessage}`;
+          } catch (parseError) {
+            // If JSON parsing fails, try to get the text
+            const errorText = await response.text();
+            console.error("Server error response (text):", errorText);
+            errorMessage = `Server error: ${response.status} - ${errorText.substring(0, 100)}`;
+          }
+          throw new Error(errorMessage);
+        }
+        
+        const data = await response.json();
+        console.log("Received data:", data);
+
+        // Check if there are any papers in the response
+        if (!Array.isArray(data) || data.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="6">No papers found matching your criteria.</td></tr>`;
+          paperCount.textContent = "No papers found";
+          return;
+        }
+
+        // Update paper count
+        paperCount.textContent = `${data.length} papers found`;
+
+        // Display the papers in the table
+        displayPapers(data);
+
+      } catch (error) {
+        console.error("Error fetching papers:", error);
+        tableBody.innerHTML = `<tr><td colspan="6" class="error-message">Failed to load papers: ${error.message}</td></tr>`;
+        paperCount.textContent = "Error loading papers";
+      }
+    }
+
+    // Function to display papers in the table
+    function displayPapers(papers) {
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+
+      papers.forEach(paper => {
+        // Extract year from published date
+        const publishedDate = paper.published ? new Date(paper.published) : null;
+        const year = publishedDate ? publishedDate.getFullYear() : 'N/A';
+        
+        // Format authors
+        const authors = paper.authors 
+          ? (Array.isArray(paper.authors) ? paper.authors.join(", ") : paper.authors) 
+          : 'N/A';
+        
+        // Create table row
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${year}</td>
+          <td>${paper.journal || 'N/A'}</td>
+          <td>${authors}</td>
+          <td>${paper.title || 'N/A'}</td>
+          <td>${paper.abstract || 'N/A'}</td>
+          <td><a href="${paper.link || '#'}" target="_blank">View PDF</a></td>
+        `;
+        
+        // Add data attributes for filtering
+        row.dataset.year = year;
+        row.dataset.journal = paper.journal || '';
+        row.dataset.author = authors;
+        
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Function to filter papers by year range
+    function filterByYear() {
+      const rows = document.querySelectorAll('#tableBody tr');
+      const filters = {
+        filter1990: [1990, 1995],
+        filter1996: [1996, 2000],
+        filter2001: [2001, 2005],
+        filter2006: [2006, 2010],
+        filter2011: [2011, 2015],
+        filter2016: [2016, 2020],
+        filter2021: [2021, 2100] // Use 2100 as a future year to include all papers from 2021 onwards
+      };
+      
+      // Check if any filter is active
+      const activeFilters = Object.keys(filters).filter(id => document.getElementById(id).checked);
+      
+      if (activeFilters.length === 0) {
+        // If no filters are active, show all rows
+        rows.forEach(row => row.style.display = '');
+        return;
+      }
+      
+      // Filter rows based on year
+      rows.forEach(row => {
+        const year = parseInt(row.dataset.year);
+        if (isNaN(year)) {
+          row.style.display = ''; // Show rows with no year
+          return;
+        }
+        
+        // Check if the year falls within any of the active filter ranges
+        const isVisible = activeFilters.some(filterId => {
+          const [min, max] = filters[filterId];
+          return year >= min && year <= max;
+        });
+        
+        row.style.display = isVisible ? '' : 'none';
+      });
+    }
+
+    // Function to sort table by column
+    function sortTable(columnIndex) {
+      const table = document.querySelector('table');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const headers = table.querySelectorAll('th');
+      
+      // Get the current sort direction
+      const currentDirection = headers[columnIndex].getAttribute('data-direction') || 'asc';
+      const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+      
+      // Update sort direction indicators
+      headers.forEach(header => {
+        header.textContent = header.textContent.replace(' ▼', '').replace(' ▲', '');
+      });
+      headers[columnIndex].textContent += newDirection === 'asc' ? ' ▲' : ' ▼';
+      headers[columnIndex].setAttribute('data-direction', newDirection);
+      
+      // Sort the rows
+      rows.sort((a, b) => {
+        const aValue = a.cells[columnIndex].textContent;
+        const bValue = b.cells[columnIndex].textContent;
+        
+        // Handle numeric values (like years)
+        if (!isNaN(aValue) && !isNaN(bValue)) {
+          return newDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        
+        // Handle string values
+        return newDirection === 'asc' 
+          ? aValue.localeCompare(bValue) 
+          : bValue.localeCompare(aValue);
+      });
+      
+      // Reorder the rows in the table
+      rows.forEach(row => tbody.appendChild(row));
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fetch papers when the page loads
+      fetchPapers();
+      
+      // Add event listeners for filters
+      document.querySelectorAll('.filter input').forEach(checkbox => {
+        checkbox.addEventListener('change', filterByYear);
+      });
+      
+      // Add event listeners for sorting
+      document.querySelectorAll('th[data-sort]').forEach(header => {
+        header.addEventListener('click', function() {
+          const columnIndex = Array.from(this.parentNode.children).indexOf(this);
+          sortTable(columnIndex);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
